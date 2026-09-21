@@ -2,6 +2,10 @@
 
 namespace App\Filament\Resources\Forms\RelationManagers;
 
+use App\Models\Form;
+use App\Models\FormSubmission;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
@@ -67,12 +71,47 @@ class SubmissionsRelationManager extends RelationManager
                     ->dateTime()
                     ->sortable(),
             ])
-            ->filters([
-                //
+            ->filters([])
+            ->headerActions([
+                Action::make('exportAll')
+                    ->label('Export All as PDF')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success')
+                    ->action(function () {
+                        /** @var Form $form */
+                        $form = $this->getOwnerRecord();
+                        $submissions = $form->submissions()
+                            ->with(['user', 'answers.question'])
+                            ->get();
+                        $questions = $form->questions()->orderBy('order')->get();
+
+                        $pdf = Pdf::loadView('pdf.submissions-all', compact('form', 'submissions', 'questions'))
+                            ->setPaper('a4', 'landscape');
+
+                        return response()->streamDownload(
+                            fn () => print ($pdf->output()),
+                            "{$form->nanoid}-submissions.pdf"
+                        );
+                    }),
             ])
-            ->headerActions([])
             ->recordActions([
                 ViewAction::make(),
+                Action::make('exportPdf')
+                    ->label('PDF')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->color('gray')
+                    ->action(function (FormSubmission $record) {
+                        $form = $this->getOwnerRecord();
+                        $submission = $record->load(['user', 'answers.question']);
+
+                        $pdf = Pdf::loadView('pdf.submission-detail', compact('form', 'submission'))
+                            ->setPaper('a4');
+
+                        return response()->streamDownload(
+                            fn () => print ($pdf->output()),
+                            "{$form->nanoid}-{$submission->user->username}.pdf"
+                        );
+                    }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
