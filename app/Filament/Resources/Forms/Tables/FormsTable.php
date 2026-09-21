@@ -16,26 +16,34 @@ class FormsTable
         return $table
             ->columns([
                 TextColumn::make('nanoid')
-                    ->label("ID"),
+                    ->label('Share ID')
+                    ->copyable()
+                    ->copyMessage('Copied!')
+                    ->fontFamily('mono'),
                 TextColumn::make('title')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('questions_count')
+                    ->label('Questions')
+                    ->counts('questions')
+                    ->sortable(),
                 TextColumn::make('tour_date')
                     ->date()
                     ->sortable(),
                 IconColumn::make('is_active')
-                    ->label("Active?")
+                    ->label('Active?')
                     ->boolean(),
                 TextColumn::make('school.name')
                     ->label('School')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('created_at')
-                    ->label("Date Created")
+                    ->label('Date Created')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->label("Last Update")
+                    ->label('Last Update')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
