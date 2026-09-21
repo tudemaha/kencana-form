@@ -52,16 +52,16 @@ class FormForm
                                 'radio' => 'Multiple Choice (Single)',
                                 'checkbox' => 'Multiple Choice (Multi)',
                                 'dropdown' => 'Dropdown',
+                                'room_partner' => 'Room Partner (Unique)',
                             ])
                             ->required()
                             ->live(),
                         Textarea::make('choices')
                             ->label('Choices (one per line)')
                             ->helperText(
-                                'For dropdown: each line is an option. '.
-                                'For "student partner", use: {"source":"users","role":"student"}'
+                                'For dropdown/room partner: each line is an option. '
                             )
-                            ->visible(fn ($get) => in_array($get('type'), ['radio', 'checkbox', 'dropdown']))
+                            ->visible(fn ($get) => in_array($get('type'), ['radio', 'checkbox', 'dropdown', 'room_partner']))
                             ->afterStateHydrated(function ($component, $state) {
                                 if (is_array($state)) {
                                     $component->state(implode("\n", $state));
