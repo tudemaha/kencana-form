@@ -25,8 +25,10 @@ class FormsTable
                 IconColumn::make('is_active')
                     ->label("Active?")
                     ->boolean(),
-                TextColumn::make('school_id')
-                    ->searchable(),
+                TextColumn::make('school.name')
+                    ->label('School')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->label("Date Created")
                     ->dateTime()

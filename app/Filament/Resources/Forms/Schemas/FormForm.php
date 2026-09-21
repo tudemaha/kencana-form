@@ -6,6 +6,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
 
 class FormForm
@@ -14,16 +15,18 @@ class FormForm
     {
         return $schema
             ->components([
-                TextInput::make('nanoid')
-                    ->required(),
                 TextInput::make('title')
                     ->required(),
                 Textarea::make('description')
                     ->columnSpanFull(),
                 DatePicker::make('tour_date'),
-                Toggle::make('is_active')
+                Select::make('school_id')
+                    ->relationship('school', 'name')
+                    ->searchable()
+                    ->preload()
                     ->required(),
-                TextInput::make('school_id')
+                Toggle::make('is_active')
+                    ->label("Active")
                     ->required(),
             ]);
     }
