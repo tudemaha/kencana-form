@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignUuid('form_id')->constrained()->cascadeOnDelete();
             $table->integer('order')->default(0);
             $table->string('question');
-            $table->enum('type', ['text', 'textarea', 'radio', 'checkbox', 'dropdown', 'room_partner']);
+            $table->enum('type', ['text', 'textarea', 'radio', 'checkbox', 'dropdown']);
             $table->json('choices')->nullable();
             $table->timestamps();
         });
