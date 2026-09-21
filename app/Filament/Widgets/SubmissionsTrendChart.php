@@ -8,7 +8,7 @@ use Filament\Widgets\ChartWidget;
 
 class SubmissionsTrendChart extends ChartWidget
 {
-    protected static ?string $heading = 'Submission Trend (Last 7 Days)';
+    protected ?string $heading = 'Submission Trend (Last 7 Days)';
 
     protected static ?int $sort = 2;
 
