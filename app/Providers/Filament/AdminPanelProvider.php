@@ -27,6 +27,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login(Login::class)
+            ->brandName('Kencana Form')
             ->colors([
                 'primary' => Color::Amber,
             ])
