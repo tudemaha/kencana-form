@@ -10,7 +10,6 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -29,7 +28,9 @@ class AdminPanelProvider extends PanelProvider
             ->login(Login::class)
             ->brandName('Kencana Form')
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => '#B1CF6F',
+                'secondary' => '#13432D',
+                'tertiary' => '#50A7AF',
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

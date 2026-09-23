@@ -16,6 +16,10 @@ class FormForm
     {
         return $schema
             ->components([
+                Toggle::make('is_active')
+                    ->label('Active')
+                    ->required()
+                    ->columnSpanFull(),
                 TextInput::make('title')
                     ->required()
                     ->columnSpanFull(),
@@ -26,9 +30,6 @@ class FormForm
                     ->relationship('school', 'name')
                     ->searchable()
                     ->preload()
-                    ->required(),
-                Toggle::make('is_active')
-                    ->label('Active')
                     ->required(),
                 Repeater::make('questions')
                     ->relationship('questions')

@@ -10,7 +10,11 @@ class SubmissionsTrendChart extends ChartWidget
 {
     protected ?string $heading = 'Submission Trend (Last 7 Days)';
 
+    protected int|string|array $columnSpan = 'full';
+
     protected static ?int $sort = 2;
+
+    protected ?string $maxHeight = '200px';
 
     protected function getData(): array
     {
@@ -41,8 +45,8 @@ class SubmissionsTrendChart extends ChartWidget
                     'label' => 'Submissions',
                     'data' => $data,
                     'fill' => 'start',
-                    'backgroundColor' => 'rgba(79, 70, 229, 0.2)', // Indigo 600 with opacity
-                    'borderColor' => '#4f46e5',
+                    'backgroundColor' => 'rgba(177, 207, 111, 0.2)', // Pastel Green with opacity
+                    'borderColor' => '#b1cf6f',
                 ],
             ],
             'labels' => $labels,
@@ -52,5 +56,16 @@ class SubmissionsTrendChart extends ChartWidget
     protected function getType(): string
     {
         return 'line';
+    }
+
+    protected function getOptions(): array
+    {
+        return [
+            'scales' => [
+                'y' => [
+                    'min' => 0,
+                ],
+            ],
+        ];
     }
 }

@@ -22,12 +22,12 @@ class StatsOverview extends BaseWidget
             Stat::make('Active Forms', Form::where('is_active', true)->count())
                 ->description('Currently accepting submissions')
                 ->descriptionIcon('heroicon-m-check-badge')
-                ->color('success'),
+                ->color('primary'),
 
             Stat::make('Total Users', User::count())
                 ->description('Registered accounts')
                 ->descriptionIcon('heroicon-m-users')
-                ->color('info'),
+                ->color('tertiary'),
         ];
     }
 }
