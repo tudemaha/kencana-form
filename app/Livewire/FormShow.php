@@ -2,38 +2,48 @@
 
 namespace App\Livewire;
 
-use App\Models\Form;
+use App\Models\Form as KencanaForm;
 use App\Models\FormAnswer;
 use App\Models\FormSubmission;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
-class FormShow extends Component
+class FormShow extends Component implements HasForms
 {
+    use InteractsWithForms;
+
     public string $nanoid = '';
 
-    public ?Form $form = null;
+    public ?KencanaForm $formRecord = null;
 
-    public array $answers = [];
+    public ?array $data = [];
 
     public ?string $submissionId = null;
 
     public function mount($nanoid)
     {
         $this->nanoid = $nanoid;
-        $this->form = Form::where('nanoid', $nanoid)
+        $this->formRecord = KencanaForm::where('nanoid', $nanoid)
             ->with(['questions' => fn ($q) => $q->orderBy('order')])
             ->firstOrFail();
 
-        if (! $this->form->is_active) {
+        if (! $this->formRecord->is_active) {
             abort(404, 'Form is no longer active.');
         }
 
         $existingSubmission = null;
         if (Auth::check()) {
             $existingSubmission = FormSubmission::where('user_id', Auth::id())
-                ->where('form_id', $this->form->id)
+                ->where('form_id', $this->formRecord->id)
                 ->with('answers')
                 ->first();
 
@@ -43,24 +53,99 @@ class FormShow extends Component
         }
 
         // Initialize answers array for data binding
-        foreach ($this->form->questions as $question) {
+        $initialData = [];
+        foreach ($this->formRecord->questions as $question) {
             if ($existingSubmission) {
                 $answerRecord = $existingSubmission->answers->firstWhere('question_id', $question->id);
                 $val = $answerRecord ? $answerRecord->answer : null;
 
                 // If it's a single value (not an array) but stored as array JSON, extract it
                 if ($question->type === 'checkbox') {
-                    $this->answers[$question->id] = is_array($val) ? $val : [];
+                    $initialData[$question->id] = is_array($val) ? $val : [];
                 } else {
-                    $this->answers[$question->id] = is_array($val) ? ($val[0] ?? '') : ($val ?? '');
+                    $initialData[$question->id] = is_array($val) ? ($val[0] ?? '') : ($val ?? '');
                 }
             } else {
-                $this->answers[$question->id] = $question->type === 'checkbox' ? [] : '';
+                $initialData[$question->id] = $question->type === 'checkbox' ? [] : '';
             }
         }
+
+        $this->form->fill($initialData);
     }
 
-    public function submit()
+    public function form(Schema $schema): Schema
+    {
+        $components = [];
+
+        if ($this->formRecord) {
+            foreach ($this->formRecord->questions as $question) {
+                switch ($question->type) {
+                    case 'text':
+                        $components[] = TextInput::make($question->id)
+                            ->label($question->question)
+                            ->required();
+                        break;
+
+                    case 'textarea':
+                        $components[] = Textarea::make($question->id)
+                            ->label($question->question)
+                            ->rows(3)
+                            ->required();
+                        break;
+
+                    case 'dropdown':
+                        $components[] = Select::make($question->id)
+                            ->label($question->question)
+                            ->options(
+                                is_array($question->choices)
+                                    ? array_combine($question->choices, $question->choices)
+                                    : []
+                            )
+                            ->searchable()
+                            ->required();
+                        break;
+
+                    case 'room_partner':
+                        $available = $this->getAvailablePartners($question);
+                        $components[] = Select::make($question->id)
+                            ->label($question->question)
+                            ->options(array_combine($available, $available))
+                            ->searchable()
+                            ->required()
+                            ->helperText(empty($available) ? 'All partners have been picked.' : null);
+                        break;
+
+                    case 'radio':
+                        $components[] = Radio::make($question->id)
+                            ->label($question->question)
+                            ->options(
+                                is_array($question->choices)
+                                    ? array_combine($question->choices, $question->choices)
+                                    : []
+                            )
+                            ->required();
+                        break;
+
+                    case 'checkbox':
+                        $components[] = CheckboxList::make($question->id)
+                            ->label($question->question)
+                            ->options(
+                                is_array($question->choices)
+                                    ? array_combine($question->choices, $question->choices)
+                                    : []
+                            )
+                            ->required();
+                        break;
+                }
+            }
+        }
+
+        return $schema
+            ->schema($components)
+            ->statePath('data');
+    }
+
+    public function save()
     {
         if (! Auth::check()) {
             $this->addError('general', 'You must be logged in to submit this form.');
@@ -68,20 +153,13 @@ class FormShow extends Component
             return;
         }
 
-        $rules = [];
-        $messages = [];
-        foreach ($this->form->questions as $question) {
-            $rules["answers.{$question->id}"] = 'required';
-            $messages["answers.{$question->id}.required"] = 'This field is required.';
-        }
+        $state = $this->form->getState();
 
-        $this->validate($rules, $messages);
-
-        DB::transaction(function () {
+        DB::transaction(function () use ($state) {
             $submission = FormSubmission::updateOrCreate(
                 [
                     'user_id' => Auth::id(),
-                    'form_id' => $this->form->id,
+                    'form_id' => $this->formRecord->id,
                 ],
                 [
                     'submitted_at' => now(),
@@ -90,8 +168,8 @@ class FormShow extends Component
 
             $this->submissionId = $submission->id;
 
-            foreach ($this->form->questions as $question) {
-                $answerValue = $this->answers[$question->id];
+            foreach ($this->formRecord->questions as $question) {
+                $answerValue = $state[$question->id] ?? null;
 
                 // Ensure arrays for JSON column
                 if (! is_array($answerValue)) {

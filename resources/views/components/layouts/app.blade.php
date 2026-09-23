@@ -6,9 +6,12 @@
 
         <title>{{ $title ?? 'Kencana Wisata' }}</title>
         
+        @filamentStyles
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="bg-gray-50 text-gray-900 antialiased">
         {{ $slot }}
+
+        @filamentScripts
     </body>
 </html>

@@ -8,32 +8,20 @@
 
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div class="bg-white py-8 px-4 shadow-sm ring-1 ring-gray-950/5 sm:rounded-xl sm:px-10">
-            <form wire:submit="login" class="space-y-6">
+            <form wire:submit="authenticate">
                 
-                @error('username')
-                    <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-4 rounded-md">
+                @error('data.username')
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-md">
                         <p class="text-sm text-red-700">{{ $message }}</p>
                     </div>
                 @enderror
 
-                <div>
-                    <label for="username" class="block text-sm font-medium leading-6 text-gray-900">Username</label>
-                    <div class="mt-2">
-                        <input wire:model="username" id="username" type="text" required autofocus class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#50A7AF] sm:text-sm sm:leading-6">
-                    </div>
-                </div>
+                {{ $this->form }}
 
-                <div>
-                    <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Password</label>
-                    <div class="mt-2">
-                        <input wire:model="password" id="password" type="password" required class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#50A7AF] sm:text-sm sm:leading-6">
-                    </div>
-                </div>
-
-                <div>
-                    <button type="submit" class="flex w-full justify-center rounded-md bg-[#13432D] py-2.5 px-3 text-sm font-semibold text-white shadow-sm hover:bg-[#13432D]/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#13432D] transition-colors">
+                <div class="mt-6">
+                    <x-filament::button type="submit" class="w-full" color="primary">
                         Sign in
-                    </button>
+                    </x-filament::button>
                 </div>
             </form>
         </div>
