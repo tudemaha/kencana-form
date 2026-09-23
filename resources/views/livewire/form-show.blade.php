@@ -27,7 +27,7 @@
                 <h3 class="text-lg font-medium text-amber-900">Login Required</h3>
                 <p class="mt-2 text-sm text-amber-700">You must be logged in as a student to fill out this form.</p>
                 <div class="mt-4">
-                    <a href="/admin/login" class="inline-flex justify-center rounded-md bg-[#13432D] py-2 px-4 text-sm font-semibold text-white shadow-sm hover:bg-[#13432D]/90">
+                    <a href="/login" class="inline-flex justify-center rounded-md bg-[#13432D] py-2 px-4 text-sm font-semibold text-white shadow-sm hover:bg-[#13432D]/90">
                         Login Now
                     </a>
                 </div>
