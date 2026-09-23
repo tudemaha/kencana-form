@@ -17,7 +17,7 @@ class FormShow extends Component
 
     public array $answers = [];
 
-    public bool $alreadySubmitted = false;
+    public ?string $submissionId = null;
 
     public function mount($nanoid)
     {
@@ -30,16 +30,33 @@ class FormShow extends Component
             abort(404, 'Form is no longer active.');
         }
 
-        // If user is logged in, check if they already submitted
+        $existingSubmission = null;
         if (Auth::check()) {
-            $this->alreadySubmitted = FormSubmission::where('user_id', Auth::id())
+            $existingSubmission = FormSubmission::where('user_id', Auth::id())
                 ->where('form_id', $this->form->id)
-                ->exists();
+                ->with('answers')
+                ->first();
+
+            if ($existingSubmission) {
+                $this->submissionId = $existingSubmission->id;
+            }
         }
 
         // Initialize answers array for data binding
         foreach ($this->form->questions as $question) {
-            $this->answers[$question->id] = $question->type === 'checkbox' ? [] : '';
+            if ($existingSubmission) {
+                $answerRecord = $existingSubmission->answers->firstWhere('question_id', $question->id);
+                $val = $answerRecord ? $answerRecord->answer : null;
+
+                // If it's a single value (not an array) but stored as array JSON, extract it
+                if ($question->type === 'checkbox') {
+                    $this->answers[$question->id] = is_array($val) ? $val : [];
+                } else {
+                    $this->answers[$question->id] = is_array($val) ? ($val[0] ?? '') : ($val ?? '');
+                }
+            } else {
+                $this->answers[$question->id] = $question->type === 'checkbox' ? [] : '';
+            }
         }
     }
 
@@ -47,12 +64,6 @@ class FormShow extends Component
     {
         if (! Auth::check()) {
             $this->addError('general', 'You must be logged in to submit this form.');
-
-            return;
-        }
-
-        if ($this->alreadySubmitted) {
-            $this->addError('general', 'You have already submitted this form.');
 
             return;
         }
@@ -67,11 +78,17 @@ class FormShow extends Component
         $this->validate($rules, $messages);
 
         DB::transaction(function () {
-            $submission = FormSubmission::create([
-                'user_id' => Auth::id(),
-                'form_id' => $this->form->id,
-                'submitted_at' => now(),
-            ]);
+            $submission = FormSubmission::updateOrCreate(
+                [
+                    'user_id' => Auth::id(),
+                    'form_id' => $this->form->id,
+                ],
+                [
+                    'submitted_at' => now(),
+                ]
+            );
+
+            $this->submissionId = $submission->id;
 
             foreach ($this->form->questions as $question) {
                 $answerValue = $this->answers[$question->id];
@@ -81,24 +98,33 @@ class FormShow extends Component
                     $answerValue = [$answerValue];
                 }
 
-                FormAnswer::create([
-                    'submission_id' => $submission->id,
-                    'question_id' => $question->id,
-                    'answer' => $answerValue,
-                ]);
+                FormAnswer::updateOrCreate(
+                    [
+                        'submission_id' => $submission->id,
+                        'question_id' => $question->id,
+                    ],
+                    [
+                        'answer' => $answerValue,
+                    ]
+                );
             }
         });
 
-        $this->alreadySubmitted = true;
-        session()->flash('message', 'Your form has been successfully submitted!');
+        session()->flash('message', 'Your form has been successfully saved!');
     }
 
     public function getAvailablePartners($question)
     {
         $choices = is_array($question->choices) ? $question->choices : [];
 
-        $pickedNames = FormAnswer::where('question_id', $question->id)
-            ->get()
+        $query = FormAnswer::where('question_id', $question->id);
+
+        // Exclude current user's pick so they can see their own partner in the list!
+        if ($this->submissionId) {
+            $query->where('submission_id', '!=', $this->submissionId);
+        }
+
+        $pickedNames = $query->get()
             ->pluck('answer')
             ->flatten()
             ->unique()

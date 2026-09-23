@@ -32,16 +32,6 @@
                     </a>
                 </div>
             </div>
-        @elseif($alreadySubmitted)
-            <div class="bg-white rounded-xl shadow-sm ring-1 ring-gray-950/5 p-8 text-center">
-                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
-                    <svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                    </svg>
-                </div>
-                <h3 class="text-xl font-medium text-gray-900">You've already responded</h3>
-                <p class="mt-2 text-sm text-gray-500">You can only fill out this form once.</p>
-            </div>
         @else
             <!-- Form -->
             <form wire:submit="submit" class="space-y-6">
@@ -134,7 +124,7 @@
 
                 <div class="flex items-center justify-between pt-2">
                     <button type="submit" class="inline-flex justify-center rounded-md bg-[#13432D] py-2.5 px-6 text-sm font-semibold text-white shadow-sm hover:bg-[#13432D]/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#13432D] transition-colors">
-                        Submit Form
+                        {{ $submissionId ? 'Update Form' : 'Submit Form' }}
                     </button>
                     <span class="text-xs font-medium text-gray-400">Powered by <span class="text-[#B1CF6F]">Kencana Wisata</span></span>
                 </div>
