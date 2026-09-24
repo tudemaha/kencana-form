@@ -6,8 +6,8 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: DejaVu Sans, sans-serif; font-size: 11px; color: #1a1a1a; padding: 28px; }
 
-        .header { text-align: center; margin-bottom: 24px; border-bottom: 2px solid #4f46e5; padding-bottom: 14px; }
-        .header h1 { font-size: 18px; font-weight: bold; color: #4f46e5; }
+        .header { text-align: center; margin-bottom: 24px; border-bottom: 2px solid #B1CF6F; padding-bottom: 14px; }
+        .header h1 { font-size: 18px; font-weight: bold; color: #13432D; }
         .header p { font-size: 10px; color: #666; margin-top: 4px; }
 
         .meta-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
@@ -15,10 +15,10 @@
         .meta-table td:first-child { font-weight: bold; color: #555; width: 120px; }
         .meta-table tr:nth-child(even) td { background: #f8f8f8; }
 
-        .section-title { font-size: 12px; font-weight: bold; color: #4f46e5; margin-bottom: 8px; border-left: 4px solid #4f46e5; padding-left: 8px; }
+        .section-title { font-size: 12px; font-weight: bold; color: #13432D; margin-bottom: 8px; border-left: 4px solid #B1CF6F; padding-left: 8px; }
 
         table.submissions { width: 100%; border-collapse: collapse; }
-        table.submissions th { background: #4f46e5; color: white; padding: 7px 10px; text-align: left; font-size: 10px; }
+        table.submissions th { background: #B1CF6F; color: #13432D; padding: 7px 10px; text-align: left; font-size: 10px; }
         table.submissions td { padding: 7px 10px; font-size: 10px; border-bottom: 1px solid #e5e7eb; vertical-align: top; }
         table.submissions tr:nth-child(even) td { background: #f9fafb; }
 

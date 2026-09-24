@@ -153,6 +153,12 @@ class FormShow extends Component
         return redirect()->route('login');
     }
 
+    public function redirectToLogin()
+    {
+        session()->put('url.intended', route('forms.show', $this->formRecord->nanoid));
+        return redirect()->route('login');
+    }
+
     public function render()
     {
         return view('livewire.form-show')->layout('components.layouts.app');

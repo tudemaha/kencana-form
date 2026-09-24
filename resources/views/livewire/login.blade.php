@@ -1,6 +1,6 @@
 <div class="min-h-screen bg-white flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 class="mt-6 text-center text-3xl sm:text-4xl font-light tracking-tight text-gray-900">Student Login</h2>
+        <h2 class="mt-6 text-center text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">Student Login</h2>
         <p class="mt-2 text-center text-sm text-gray-500">
             Sign in to access your forms
         </p>
@@ -24,7 +24,7 @@
                         Username <span class="text-red-500">*</span>
                     </label>
                     <div class="mt-2">
-                        <input id="username" type="text" wire:model="username" required autofocus class="block w-full rounded-xl border border-gray-300 shadow-sm focus:border-[#B1CF6F] focus:ring-[#B1CF6F] sm:text-sm px-4 py-2.5 transition-colors">
+                        <input id="username" type="text" wire:model="username" required autofocus class="block w-full rounded-xl border border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm px-4 py-2.5 transition-colors">
                     </div>
                     @error('username')
                         <p class="mt-1.5 text-sm text-red-500 font-medium">{{ $message }}</p>
@@ -36,7 +36,7 @@
                         Password <span class="text-red-500">*</span>
                     </label>
                     <div class="mt-2">
-                        <input id="password" type="password" wire:model="password" required class="block w-full rounded-xl border border-gray-300 shadow-sm focus:border-[#B1CF6F] focus:ring-[#B1CF6F] sm:text-sm px-4 py-2.5 transition-colors">
+                        <input id="password" type="password" wire:model="password" required class="block w-full rounded-xl border border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm px-4 py-2.5 transition-colors">
                     </div>
                     @error('password')
                         <p class="mt-1.5 text-sm text-red-500 font-medium">{{ $message }}</p>
@@ -44,12 +44,19 @@
                 </div>
 
                 <div class="pt-4 mt-8">
-                    <button type="submit" class="w-full inline-flex justify-center rounded-full border border-transparent bg-[#13432D] py-3 px-8 text-sm font-medium text-white shadow-sm hover:bg-[#1a5a3c] focus:outline-none focus:ring-2 focus:ring-[#13432D] focus:ring-offset-2 transition-colors">
+                    <button type="submit" class="w-full inline-flex justify-center rounded-xl border border-transparent bg-primary py-3 px-8 text-sm font-bold text-secondary shadow-sm hover:bg-secondary hover:text-white focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 transition-colors cursor-pointer">
                         Sign in
                     </button>
                 </div>
+                
+                <div class="mt-4 text-center">
+                    <p class="text-sm text-gray-600">
+                        Don't have an account? 
+                        <a href="{{ route('register') }}" class="font-medium text-primary hover:text-secondary transition-colors">Sign up</a>
+                    </p>
+                </div>
             </form>
         </div>
-        <p class="text-center mt-8 text-xs text-gray-400 font-medium">Powered by <span class="text-[#B1CF6F]">Kencana Wisata</span></p>
+        <p class="text-center mt-8 text-xs text-gray-400 font-medium">Powered by <span class="text-primary">Kencana Wisata</span></p>
     </div>
 </div>

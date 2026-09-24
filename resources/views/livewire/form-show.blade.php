@@ -2,8 +2,17 @@
     <div class="max-w-2xl mx-auto">
         
         @if(Auth::check())
-            <div class="flex justify-end mb-8">
-                <button wire:click="logout" type="button" class="text-sm font-medium text-gray-400 hover:text-gray-700 transition-colors flex items-center gap-2">
+            <div class="flex justify-between items-center mb-8 border-b border-gray-100 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-secondary font-bold text-sm">
+                        {{ Auth::user()->initials() }}
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-gray-900 leading-none">{{ Auth::user()->name }}</p>
+                        <p class="text-xs text-gray-500 mt-1">{{ '@' . Auth::user()->username }}</p>
+                    </div>
+                </div>
+                <button wire:click="logout" type="button" class="text-sm font-medium text-primary hover:text-secondary transition-colors flex items-center gap-2 cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
                     </svg>
@@ -13,7 +22,7 @@
         @endif
 
         <div class="mb-10">
-            <h1 class="text-3xl sm:text-4xl font-light tracking-tight text-gray-900 mb-2">{{ $formRecord->title }}</h1>
+            <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 mb-2">{{ $formRecord->title }}</h1>
             
             <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 text-sm text-gray-500 mt-4 border-b border-gray-100 pb-6">
                 <div class="flex items-center gap-2">
@@ -44,9 +53,9 @@
                 </div>
                 <h3 class="text-lg font-medium text-gray-900">Login Required</h3>
                 <p class="mt-2 text-sm text-gray-500">You must be logged in as a student to fill out this form.</p>
-                <a href="/login" class="mt-6 inline-flex items-center justify-center px-6 py-2.5 border border-transparent text-sm font-medium rounded-full text-white bg-[#B1CF6F] hover:bg-[#a0be5e] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#B1CF6F]">
+                <button wire:click="redirectToLogin" type="button" class="mt-6 inline-flex items-center justify-center px-6 py-2.5 border border-transparent text-sm font-medium rounded-xl text-secondary bg-primary hover:bg-secondary hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary cursor-pointer">
                     Login Now
-                </a>
+                </button>
             </div>
         @else
             <form wire:submit="save" class="space-y-8">
@@ -76,13 +85,13 @@
                             </label>
 
                             @if($question->type === 'text')
-                                <input type="text" wire:model="data.{{ $question->id }}" class="block w-full rounded-xl border border-gray-300 shadow-sm focus:border-[#B1CF6F] focus:ring-[#B1CF6F] sm:text-sm px-4 py-2.5 transition-colors">
+                                <input type="text" wire:model="data.{{ $question->id }}" class="block w-full rounded-xl border border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm px-4 py-2.5 transition-colors">
                             
                             @elseif($question->type === 'textarea')
-                                <textarea wire:model="data.{{ $question->id }}" rows="3" class="block w-full rounded-xl border border-gray-300 shadow-sm focus:border-[#B1CF6F] focus:ring-[#B1CF6F] sm:text-sm px-4 py-2.5 transition-colors"></textarea>
+                                <textarea wire:model="data.{{ $question->id }}" rows="3" class="block w-full rounded-xl border border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm px-4 py-2.5 transition-colors"></textarea>
                             
                             @elseif($question->type === 'dropdown')
-                                <select wire:model="data.{{ $question->id }}" class="block w-full rounded-xl border border-gray-300 shadow-sm focus:border-[#B1CF6F] focus:ring-[#B1CF6F] sm:text-sm px-4 py-2.5 transition-colors bg-white">
+                                <select wire:model="data.{{ $question->id }}" class="block w-full rounded-xl border border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm px-4 py-2.5 transition-colors bg-white">
                                     <option value="">Select an option</option>
                                     @foreach($question->choices ?? [] as $choice)
                                         <option value="{{ $choice }}">{{ $choice }}</option>
@@ -93,7 +102,7 @@
                                 @php
                                     $available = $this->getAvailablePartners($question);
                                 @endphp
-                                <select wire:model="data.{{ $question->id }}" class="block w-full rounded-xl border border-gray-300 shadow-sm focus:border-[#B1CF6F] focus:ring-[#B1CF6F] sm:text-sm px-4 py-2.5 transition-colors bg-white">
+                                <select wire:model="data.{{ $question->id }}" class="block w-full rounded-xl border border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm px-4 py-2.5 transition-colors bg-white">
                                     <option value="">Select a partner</option>
                                     @foreach($available as $choice)
                                         <option value="{{ $choice }}">{{ $choice }}</option>
@@ -107,7 +116,7 @@
                                 <div class="space-y-3 mt-3">
                                     @foreach($question->choices ?? [] as $choice)
                                         <div class="flex items-center">
-                                            <input type="radio" wire:model="data.{{ $question->id }}" value="{{ $choice }}" id="q_{{ $question->id }}_{{ loop->index }}" class="h-4 w-4 border-gray-300 text-[#13432D] focus:ring-[#13432D]">
+                                            <input type="radio" wire:model="data.{{ $question->id }}" value="{{ $choice }}" id="q_{{ $question->id }}_{{ loop->index }}" class="h-4 w-4 border-gray-300 text-secondary focus:ring-secondary">
                                             <label for="q_{{ $question->id }}_{{ loop->index }}" class="ml-3 block text-sm text-gray-700 cursor-pointer">
                                                 {{ $choice }}
                                             </label>
@@ -119,7 +128,7 @@
                                 <div class="space-y-3 mt-3">
                                     @foreach($question->choices ?? [] as $choice)
                                         <div class="flex items-center">
-                                            <input type="checkbox" wire:model="data.{{ $question->id }}" value="{{ $choice }}" id="q_{{ $question->id }}_{{ loop->index }}" class="h-4 w-4 rounded border-gray-300 text-[#13432D] focus:ring-[#13432D]">
+                                            <input type="checkbox" wire:model="data.{{ $question->id }}" value="{{ $choice }}" id="q_{{ $question->id }}_{{ loop->index }}" class="h-4 w-4 rounded border-gray-300 text-secondary focus:ring-secondary">
                                             <label for="q_{{ $question->id }}_{{ loop->index }}" class="ml-3 block text-sm text-gray-700 cursor-pointer">
                                                 {{ $choice }}
                                             </label>
@@ -136,11 +145,11 @@
                 </div>
 
                 <div class="pt-8 mt-8 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <button type="submit" class="w-full sm:w-auto inline-flex justify-center rounded-full border border-transparent bg-[#13432D] py-3 px-8 text-sm font-medium text-white shadow-sm hover:bg-[#1a5a3c] focus:outline-none focus:ring-2 focus:ring-[#13432D] focus:ring-offset-2 transition-colors">
+                    <button type="submit" class="w-full sm:w-auto inline-flex justify-center rounded-xl border border-transparent bg-primary py-3 px-8 text-sm font-bold text-secondary shadow-sm hover:bg-secondary hover:text-white focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 transition-colors cursor-pointer">
                         {{ $submissionId ? 'Update Form' : 'Submit Form' }}
                     </button>
                     <span class="text-xs text-gray-400 font-medium">
-                        Powered by <span class="text-[#B1CF6F]">Kencana Wisata</span>
+                        Powered by <span class="text-primary">Kencana Wisata</span>
                     </span>
                 </div>
             </form>

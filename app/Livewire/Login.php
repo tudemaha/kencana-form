@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Auth;
+namespace App\Livewire;
 
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -29,6 +29,6 @@ class Login extends Component
 
     public function render()
     {
-        return view('livewire.auth.login')->layout('components.layouts.app');
+        return view('livewire.login')->layout('components.layouts.app');
     }
 }

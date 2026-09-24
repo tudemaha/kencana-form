@@ -6,8 +6,8 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: DejaVu Sans, sans-serif; font-size: 12px; color: #1a1a1a; padding: 32px; }
 
-        .header { text-align: center; margin-bottom: 28px; border-bottom: 2px solid #4f46e5; padding-bottom: 16px; }
-        .header h1 { font-size: 20px; font-weight: bold; color: #4f46e5; }
+        .header { text-align: center; margin-bottom: 28px; border-bottom: 2px solid #B1CF6F; padding-bottom: 16px; }
+        .header h1 { font-size: 20px; font-weight: bold; color: #13432D; }
         .header p { font-size: 11px; color: #666; margin-top: 4px; }
 
         .meta-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
@@ -15,7 +15,7 @@
         .meta-table td:first-child { font-weight: bold; color: #555; width: 140px; }
         .meta-table tr:nth-child(even) td { background: #f8f8f8; }
 
-        .section-title { font-size: 13px; font-weight: bold; color: #4f46e5; margin-bottom: 10px; border-left: 4px solid #4f46e5; padding-left: 8px; }
+        .section-title { font-size: 13px; font-weight: bold; color: #13432D; margin-bottom: 10px; border-left: 4px solid #B1CF6F; padding-left: 8px; }
 
         .answer-row { margin-bottom: 12px; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 4px; }
         .answer-row .question { font-weight: bold; font-size: 11px; color: #374151; margin-bottom: 4px; }
