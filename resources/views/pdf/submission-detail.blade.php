@@ -45,7 +45,7 @@
         </tr>
         <tr>
             <td>Tour Date</td>
-            <td>{{ $form->tour_date?->format('d M Y') ?? '-' }}</td>
+            <td>{{ $form->tour_date?->format('d F Y') ?? '-' }}</td>
         </tr>
         <tr>
             <td>Submitted At</td>

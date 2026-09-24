@@ -4,11 +4,14 @@ namespace App\Livewire;
 
 use App\Models\Form as KencanaForm;
 use App\Models\FormAnswer;
+use App\Models\FormQuestion;
 use App\Models\FormSubmission;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
+#[Layout('components.layouts.app')]
 class FormShow extends Component
 {
     public string $nanoid = '';
@@ -19,7 +22,7 @@ class FormShow extends Component
 
     public ?string $submissionId = null;
 
-    public function mount($nanoid)
+    public function mount(string $nanoid)
     {
         $this->nanoid = $nanoid;
         $this->formRecord = KencanaForm::where('nanoid', $nanoid)
@@ -122,7 +125,7 @@ class FormShow extends Component
         session()->flash('message', 'Your form has been successfully saved!');
     }
 
-    public function getAvailablePartners($question)
+    public function getAvailablePartners(FormQuestion $question)
     {
         $choices = is_array($question->choices) ? $question->choices : [];
 
@@ -156,11 +159,12 @@ class FormShow extends Component
     public function redirectToLogin()
     {
         session()->put('url.intended', route('forms.show', $this->formRecord->nanoid));
+
         return redirect()->route('login');
     }
 
     public function render()
     {
-        return view('livewire.form-show')->layout('components.layouts.app');
+        return view('livewire.form-show');
     }
 }

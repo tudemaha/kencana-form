@@ -6,8 +6,10 @@ use App\Models\School;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
+#[Layout('components.layouts.app')]
 class Register extends Component
 {
     public string $name = '';
@@ -46,6 +48,6 @@ class Register extends Component
     {
         return view('livewire.register', [
             'schools' => School::orderBy('name')->get(),
-        ])->layout('components.layouts.app');
+        ]);
     }
 }

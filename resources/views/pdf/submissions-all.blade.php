@@ -38,7 +38,7 @@
         </tr>
         <tr>
             <td>Tour Date</td>
-            <td>{{ $form->tour_date?->format('d M Y') ?? '-' }}</td>
+            <td>{{ $form->tour_date?->format('d F Y') ?? '-' }}</td>
         </tr>
         <tr>
             <td>Form ID</td>
@@ -64,7 +64,7 @@
                 <tr>
                     <td>{{ $i + 1 }}</td>
                     <td>{{ $submission->user->name }}</td>
-                    <td>{{ $submission->submitted_at?->format('d M Y') ?? '-' }}</td>
+                    <td>{{ $submission->submitted_at?->format('d F Y') ?? '-' }}</td>
                     @foreach($questions as $q)
                         @php
                             $ans = $submission->answers->firstWhere('question_id', $q->id);

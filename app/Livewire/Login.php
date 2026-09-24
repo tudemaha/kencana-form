@@ -3,8 +3,10 @@
 namespace App\Livewire;
 
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
+#[Layout('components.layouts.app')]
 class Login extends Component
 {
     public string $username = '';
@@ -29,6 +31,6 @@ class Login extends Component
 
     public function render()
     {
-        return view('livewire.login')->layout('components.layouts.app');
+        return view('livewire.login');
     }
 }

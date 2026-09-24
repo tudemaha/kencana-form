@@ -32,7 +32,7 @@
                 @if($formRecord->tour_date)
                     <div class="flex items-center gap-2">
                         <span class="text-gray-400">Tour Date:</span> 
-                        <span class="font-medium text-gray-700">{{ $formRecord->tour_date->format('M d, Y') }}</span>
+                        <span class="font-medium text-gray-700">{{ $formRecord->tour_date->format('d F Y') }}</span>
                     </div>
                 @endif
             </div>
