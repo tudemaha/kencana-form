@@ -8,10 +8,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    if (! Auth::check()) {
-        return redirect()->route('login');
-    }
+    return view('welcome');
+})->name('home');
 
+Route::get('/dashboard', function () {
     $user = Auth::user();
 
     if ($user->role === 'admin') {
@@ -28,7 +28,7 @@ Route::get('/', function () {
     }
 
     return abort(404, 'No active forms available for your school.');
-})->name('home');
+})->middleware('auth')->name('dashboard');
 Route::get('/login', Login::class)->name('login')->middleware('guest');
 Route::get('/register', Register::class)->name('register')->middleware('guest');
 Route::get('/forms/{nanoid}', FormShow::class)->name('forms.show');

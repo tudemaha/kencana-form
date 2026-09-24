@@ -41,7 +41,7 @@ class Register extends Component
 
         Auth::login($user);
 
-        return redirect()->intended('/');
+        return redirect()->intended(route('dashboard'));
     }
 
     public function render()
