@@ -44,7 +44,17 @@
             @endif
         </div>
 
-        @if(!Auth::check())
+        @if($isForbidden)
+            <div class="bg-red-50 p-8 rounded-2xl text-center border border-red-100">
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-red-100 text-red-600 mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-medium text-red-900">Access Denied</h3>
+                <p class="mt-2 text-sm text-red-700">This form is exclusively for students of <span class="font-bold">{{ $formRecord->school->name }}</span>.<br>You are registered under a different school.</p>
+            </div>
+        @elseif(!Auth::check())
             <div class="bg-gray-50 p-8 rounded-2xl text-center border border-gray-100">
                 <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-yellow-50 text-yellow-600 mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -116,8 +126,8 @@
                                 <div class="space-y-3 mt-3">
                                     @foreach($question->choices ?? [] as $choice)
                                         <div class="flex items-center">
-                                            <input type="radio" wire:model="data.{{ $question->id }}" value="{{ $choice }}" id="q_{{ $question->id }}_{{ loop->index }}" class="h-4 w-4 border-gray-300 text-secondary focus:ring-secondary">
-                                            <label for="q_{{ $question->id }}_{{ loop->index }}" class="ml-3 block text-sm text-gray-700 cursor-pointer">
+                                            <input type="radio" wire:model="data.{{ $question->id }}" value="{{ $choice }}" id="q_{{ $question->id }}_{{ $loop->index }}" class="h-4 w-4 border-gray-300 text-secondary focus:ring-secondary">
+                                            <label for="q_{{ $question->id }}_{{ $loop->index }}" class="ml-3 block text-sm text-gray-700 cursor-pointer">
                                                 {{ $choice }}
                                             </label>
                                         </div>
@@ -128,8 +138,8 @@
                                 <div class="space-y-3 mt-3">
                                     @foreach($question->choices ?? [] as $choice)
                                         <div class="flex items-center">
-                                            <input type="checkbox" wire:model="data.{{ $question->id }}" value="{{ $choice }}" id="q_{{ $question->id }}_{{ loop->index }}" class="h-4 w-4 rounded border-gray-300 text-secondary focus:ring-secondary">
-                                            <label for="q_{{ $question->id }}_{{ loop->index }}" class="ml-3 block text-sm text-gray-700 cursor-pointer">
+                                            <input type="checkbox" wire:model="data.{{ $question->id }}" value="{{ $choice }}" id="q_{{ $question->id }}_{{ $loop->index }}" class="h-4 w-4 rounded border-gray-300 text-secondary focus:ring-secondary">
+                                            <label for="q_{{ $question->id }}_{{ $loop->index }}" class="ml-3 block text-sm text-gray-700 cursor-pointer">
                                                 {{ $choice }}
                                             </label>
                                         </div>

@@ -22,6 +22,8 @@ class FormShow extends Component
 
     public ?string $submissionId = null;
 
+    public bool $isForbidden = false;
+
     public function mount(string $nanoid)
     {
         $this->nanoid = $nanoid;
@@ -35,6 +37,11 @@ class FormShow extends Component
 
         $existingSubmission = null;
         if (Auth::check()) {
+            if (Auth::user()->role !== 'admin' && Auth::user()->school_id !== $this->formRecord->school_id) {
+                $this->isForbidden = true;
+                return;
+            }
+
             $existingSubmission = FormSubmission::where('user_id', Auth::id())
                 ->where('form_id', $this->formRecord->id)
                 ->with('answers')
