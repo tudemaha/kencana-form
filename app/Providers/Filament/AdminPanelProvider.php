@@ -28,9 +28,9 @@ class AdminPanelProvider extends PanelProvider
             ->login(Login::class)
             ->brandName('Kencana Form')
             ->colors([
-                'primary' => '#B1CF6F',
-                'secondary' => '#13432D',
-                'tertiary' => '#50A7AF',
+                'primary' => '#012862',
+                'secondary' => '#d4b05c',
+                'tertiary' => '#9f1239',
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
