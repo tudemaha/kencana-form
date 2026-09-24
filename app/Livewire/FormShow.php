@@ -5,27 +5,17 @@ namespace App\Livewire;
 use App\Models\Form as KencanaForm;
 use App\Models\FormAnswer;
 use App\Models\FormSubmission;
-use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
-class FormShow extends Component implements HasForms
+class FormShow extends Component
 {
-    use InteractsWithForms;
-
     public string $nanoid = '';
 
     public ?KencanaForm $formRecord = null;
 
-    public ?array $data = [];
+    public array $data = [];
 
     public ?string $submissionId = null;
 
@@ -59,7 +49,6 @@ class FormShow extends Component implements HasForms
                 $answerRecord = $existingSubmission->answers->firstWhere('question_id', $question->id);
                 $val = $answerRecord ? $answerRecord->answer : null;
 
-                // If it's a single value (not an array) but stored as array JSON, extract it
                 if ($question->type === 'checkbox') {
                     $initialData[$question->id] = is_array($val) ? $val : [];
                 } else {
@@ -70,79 +59,7 @@ class FormShow extends Component implements HasForms
             }
         }
 
-        $this->form->fill($initialData);
-    }
-
-    public function form(Schema $schema): Schema
-    {
-        $components = [];
-
-        if ($this->formRecord) {
-            foreach ($this->formRecord->questions as $question) {
-                switch ($question->type) {
-                    case 'text':
-                        $components[] = TextInput::make($question->id)
-                            ->label($question->question)
-                            ->required();
-                        break;
-
-                    case 'textarea':
-                        $components[] = Textarea::make($question->id)
-                            ->label($question->question)
-                            ->rows(3)
-                            ->required();
-                        break;
-
-                    case 'dropdown':
-                        $components[] = Select::make($question->id)
-                            ->label($question->question)
-                            ->options(
-                                is_array($question->choices)
-                                    ? array_combine($question->choices, $question->choices)
-                                    : []
-                            )
-                            ->searchable()
-                            ->required();
-                        break;
-
-                    case 'room_partner':
-                        $available = $this->getAvailablePartners($question);
-                        $components[] = Select::make($question->id)
-                            ->label($question->question)
-                            ->options(array_combine($available, $available))
-                            ->searchable()
-                            ->required()
-                            ->helperText(empty($available) ? 'All partners have been picked.' : null);
-                        break;
-
-                    case 'radio':
-                        $components[] = Radio::make($question->id)
-                            ->label($question->question)
-                            ->options(
-                                is_array($question->choices)
-                                    ? array_combine($question->choices, $question->choices)
-                                    : []
-                            )
-                            ->required();
-                        break;
-
-                    case 'checkbox':
-                        $components[] = CheckboxList::make($question->id)
-                            ->label($question->question)
-                            ->options(
-                                is_array($question->choices)
-                                    ? array_combine($question->choices, $question->choices)
-                                    : []
-                            )
-                            ->required();
-                        break;
-                }
-            }
-        }
-
-        return $schema
-            ->schema($components)
-            ->statePath('data');
+        $this->data = $initialData;
     }
 
     public function save()
@@ -153,9 +70,23 @@ class FormShow extends Component implements HasForms
             return;
         }
 
-        $state = $this->form->getState();
+        // Validation
+        $rules = [];
+        foreach ($this->formRecord->questions as $question) {
+            $rules['data.'.$question->id] = 'required';
+            if ($question->type === 'checkbox') {
+                $rules['data.'.$question->id] = 'required|array|min:1';
+            }
+        }
 
-        DB::transaction(function () use ($state) {
+        $messages = [
+            'required' => 'This field is required.',
+            'min' => 'You must select at least one option.',
+        ];
+
+        $this->validate($rules, $messages);
+
+        DB::transaction(function () {
             $submission = FormSubmission::updateOrCreate(
                 [
                     'user_id' => Auth::id(),
@@ -169,7 +100,7 @@ class FormShow extends Component implements HasForms
             $this->submissionId = $submission->id;
 
             foreach ($this->formRecord->questions as $question) {
-                $answerValue = $state[$question->id] ?? null;
+                $answerValue = $this->data[$question->id] ?? null;
 
                 // Ensure arrays for JSON column
                 if (! is_array($answerValue)) {
@@ -211,6 +142,15 @@ class FormShow extends Component implements HasForms
         return array_filter($choices, function ($choice) use ($pickedNames) {
             return ! in_array($choice, $pickedNames);
         });
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+        session()->invalidate();
+        session()->regenerateToken();
+
+        return redirect()->route('login');
     }
 
     public function render()
