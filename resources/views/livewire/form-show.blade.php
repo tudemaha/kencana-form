@@ -112,12 +112,21 @@
                                 @php
                                     $available = $this->getAvailablePartners($question);
                                 @endphp
-                                <select wire:model="data.{{ $question->id }}" class="block w-full rounded-xl border border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm px-4 py-2.5 transition-colors bg-white">
-                                    <option value="">Select a partner</option>
-                                    @foreach($available as $choice)
-                                        <option value="{{ $choice }}">{{ $choice }}</option>
-                                    @endforeach
-                                </select>
+                                <div x-data="{ search: '' }" class="mt-3 border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm">
+                                    <div class="p-2 border-b border-gray-100 bg-gray-50">
+                                        <input x-model="search" type="text" placeholder="Search partners..." class="w-full text-sm border-gray-300 rounded-lg focus:ring-primary focus:border-primary px-3 py-2 bg-white">
+                                    </div>
+                                    <div class="max-h-60 overflow-y-auto p-3 space-y-3">
+                                        @foreach($available as $choice)
+                                            <div class="flex items-center" x-show="search === '' || '{{ strtolower(addslashes($choice)) }}'.includes(search.toLowerCase())">
+                                                <input type="checkbox" wire:model="data.{{ $question->id }}" value="{{ $choice }}" id="q_{{ $question->id }}_{{ $loop->index }}" class="h-4 w-4 rounded border-gray-300 text-secondary focus:ring-secondary">
+                                                <label for="q_{{ $question->id }}_{{ $loop->index }}" class="ml-3 block text-sm text-gray-700 cursor-pointer">
+                                                    {{ $choice }}
+                                                </label>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
                                 @if(empty($available))
                                     <p class="mt-1 text-xs text-gray-500">All partners have been picked.</p>
                                 @endif

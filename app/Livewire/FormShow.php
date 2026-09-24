@@ -59,13 +59,13 @@ class FormShow extends Component
                 $answerRecord = $existingSubmission->answers->firstWhere('question_id', $question->id);
                 $val = $answerRecord ? $answerRecord->answer : null;
 
-                if ($question->type === 'checkbox') {
+                if (in_array($question->type, ['checkbox', 'room_partner'])) {
                     $initialData[$question->id] = is_array($val) ? $val : [];
                 } else {
                     $initialData[$question->id] = is_array($val) ? ($val[0] ?? '') : ($val ?? '');
                 }
             } else {
-                $initialData[$question->id] = $question->type === 'checkbox' ? [] : '';
+                $initialData[$question->id] = in_array($question->type, ['checkbox', 'room_partner']) ? [] : '';
             }
         }
 
@@ -84,7 +84,7 @@ class FormShow extends Component
         $rules = [];
         foreach ($this->formRecord->questions as $question) {
             $rules['data.'.$question->id] = 'required';
-            if ($question->type === 'checkbox') {
+            if (in_array($question->type, ['checkbox', 'room_partner'])) {
                 $rules['data.'.$question->id] = 'required|array|min:1';
             }
         }

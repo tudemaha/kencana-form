@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700" rel="stylesheet" />
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: DejaVu Sans, sans-serif; font-size: 12px; color: #1a1a1a; padding: 32px; }
+        body { font-family: 'Inter', DejaVu Sans, sans-serif; font-size: 12px; color: #1a1a1a; padding: 32px; }
 
         .header { text-align: center; margin-bottom: 28px; border-bottom: 2px solid #B1CF6F; padding-bottom: 16px; }
         .header h1 { font-size: 20px; font-weight: bold; color: #13432D; }
