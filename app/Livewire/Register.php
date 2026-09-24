@@ -47,7 +47,9 @@ class Register extends Component
     public function render()
     {
         return view('livewire.register', [
-            'schools' => School::orderBy('name')->get(),
+            'schools' => School::whereDoesntHave('users', function ($query) {
+                $query->where('role', 'admin');
+            })->orderBy('name')->get(),
         ]);
     }
 }
