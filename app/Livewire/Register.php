@@ -4,8 +4,10 @@ namespace App\Livewire;
 
 use App\Models\School;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -22,7 +24,7 @@ class Register extends Component
 
     public string $school_id = '';
 
-    public function register()
+    public function register(): RedirectResponse
     {
         $this->validate([
             'name' => 'required|string|max:255',
@@ -44,7 +46,7 @@ class Register extends Component
         return redirect()->intended(route('dashboard'));
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.register', [
             'schools' => School::whereDoesntHave('users', function ($query) {

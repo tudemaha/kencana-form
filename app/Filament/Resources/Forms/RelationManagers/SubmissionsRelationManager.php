@@ -102,6 +102,8 @@ class SubmissionsRelationManager extends RelationManager
                     ->color('gray')
                     ->action(function (FormSubmission $record) {
                         $form = $this->getOwnerRecord();
+                        /** @var FormSubmission $submission */
+                        /** @var Form $form */
                         $submission = $record->load(['user', 'answers.question']);
 
                         $pdf = Pdf::loadView('pdf.submission-detail', compact('form', 'submission'))

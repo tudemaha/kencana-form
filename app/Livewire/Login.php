@@ -2,7 +2,9 @@
 
 namespace App\Livewire;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -13,7 +15,7 @@ class Login extends Component
 
     public string $password = '';
 
-    public function authenticate()
+    public function authenticate(): ?RedirectResponse
     {
         $this->validate([
             'username' => 'required',
@@ -27,9 +29,11 @@ class Login extends Component
         }
 
         $this->addError('auth', 'The provided credentials do not match our records.');
+
+        return null;
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.login');
     }

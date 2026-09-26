@@ -20,11 +20,13 @@ class FormQuestion extends Model
         ];
     }
 
+    /** @return BelongsTo<Form, $this> */
     public function form(): BelongsTo
     {
         return $this->belongsTo(Form::class);
     }
 
+    /** @return HasMany<FormAnswer, $this> */
     public function answers(): HasMany
     {
         return $this->hasMany(FormAnswer::class, 'question_id');

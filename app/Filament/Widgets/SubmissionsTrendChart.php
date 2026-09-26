@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\FormSubmission;
+use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Filament\Widgets\ChartWidget;
 
@@ -33,7 +34,7 @@ class SubmissionsTrendChart extends ChartWidget
             $labels[] = $date->format('M d');
 
             $count = $submissions->filter(function ($submission) use ($dateString) {
-                return $submission->submitted_at?->format('Y-m-d') === $dateString;
+                return Carbon::parse($submission->submitted_at)->format('Y-m-d') === $dateString;
             })->count();
 
             $data[] = $count;

@@ -6,8 +6,10 @@ use App\Models\Form as KencanaForm;
 use App\Models\FormAnswer;
 use App\Models\FormQuestion;
 use App\Models\FormSubmission;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -18,13 +20,14 @@ class FormShow extends Component
 
     public ?KencanaForm $formRecord = null;
 
+    /** @var array<string, mixed> */
     public array $data = [];
 
     public ?string $submissionId = null;
 
     public bool $isForbidden = false;
 
-    public function mount(string $nanoid)
+    public function mount(string $nanoid): void
     {
         $this->nanoid = $nanoid;
         $this->formRecord = KencanaForm::where('nanoid', $nanoid)
@@ -58,6 +61,7 @@ class FormShow extends Component
         foreach ($this->formRecord->questions as $question) {
             if ($existingSubmission) {
                 $answerRecord = $existingSubmission->answers->firstWhere('question_id', $question->id);
+                /** @var mixed $val */
                 $val = $answerRecord ? $answerRecord->answer : null;
 
                 if (in_array($question->type, ['checkbox', 'room_partner'])) {
@@ -73,7 +77,7 @@ class FormShow extends Component
         $this->data = $initialData;
     }
 
-    public function save()
+    public function save(): void
     {
         if (! Auth::check()) {
             $this->addError('general', 'You must be logged in to submit this form.');
@@ -133,9 +137,10 @@ class FormShow extends Component
         session()->flash('message', 'Your form has been successfully saved!');
     }
 
-    public function getAvailablePartners(FormQuestion $question)
+    /** @return array<int|string, mixed> */
+    public function getAvailablePartners(FormQuestion $question): array
     {
-        $choices = is_array($question->choices) ? $question->choices : [];
+        $choices = (array) $question->choices;
 
         $query = FormAnswer::where('question_id', $question->id);
 
@@ -144,7 +149,7 @@ class FormShow extends Component
             $query->where('submission_id', '!=', $this->submissionId);
         }
 
-        $pickedNames = $query->get()
+        $pickedNames = $query
             ->pluck('answer')
             ->flatten()
             ->unique()
@@ -155,7 +160,7 @@ class FormShow extends Component
         });
     }
 
-    public function logout()
+    public function logout(): RedirectResponse
     {
         Auth::logout();
         session()->invalidate();
@@ -164,14 +169,14 @@ class FormShow extends Component
         return redirect()->route('login');
     }
 
-    public function redirectToLogin()
+    public function redirectToLogin(): RedirectResponse
     {
         session()->put('url.intended', route('forms.show', $this->formRecord->nanoid));
 
         return redirect()->route('login');
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.form-show');
     }

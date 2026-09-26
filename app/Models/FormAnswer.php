@@ -19,11 +19,13 @@ class FormAnswer extends Model
         ];
     }
 
+    /** @return BelongsTo<FormSubmission, $this> */
     public function submission(): BelongsTo
     {
         return $this->belongsTo(FormSubmission::class, 'submission_id');
     }
 
+    /** @return BelongsTo<FormQuestion, $this> */
     public function question(): BelongsTo
     {
         return $this->belongsTo(FormQuestion::class, 'question_id');

@@ -29,16 +29,19 @@ class Form extends Model
         ];
     }
 
+    /** @return BelongsTo<School, $this> */
     public function school(): BelongsTo
     {
         return $this->belongsTo(School::class);
     }
 
+    /** @return HasMany<FormQuestion, $this> */
     public function questions(): HasMany
     {
         return $this->hasMany(FormQuestion::class);
     }
 
+    /** @return HasMany<FormSubmission, $this> */
     public function submissions(): HasMany
     {
         return $this->hasMany(FormSubmission::class);

@@ -20,16 +20,19 @@ class FormSubmission extends Model
         ];
     }
 
+    /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /** @return BelongsTo<Form, $this> */
     public function form(): BelongsTo
     {
         return $this->belongsTo(Form::class);
     }
 
+    /** @return HasMany<FormAnswer, $this> */
     public function answers(): HasMany
     {
         return $this->hasMany(FormAnswer::class, 'submission_id');
