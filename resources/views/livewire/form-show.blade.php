@@ -63,7 +63,7 @@
                 </div>
                 <h3 class="text-lg font-medium text-gray-900">Login Required</h3>
                 <p class="mt-2 text-sm text-gray-500">You must be logged in as a student to fill out this form.</p>
-                <button wire:click="redirectToLogin" type="button" class="mt-6 inline-flex items-center justify-center py-3.5 px-8 text-base font-bold text-white shadow-md rounded-xl bg-primary hover:bg-primary/90 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary cursor-pointer">
+                <button wire:click="redirectToLogin" type="button" class="mt-6 inline-flex items-center justify-center py-3.5 px-8 text-base font-bold text-white shadow-md rounded-xl bg-primary hover:bg-primary/90 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary cursor-pointer">
                     Login Now
                 </button>
             </div>
