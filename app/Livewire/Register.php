@@ -1,0 +1,57 @@
+<?php
+
+namespace App\Livewire;
+
+use App\Models\School;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\View\View;
+use Livewire\Attributes\Layout;
+use Livewire\Component;
+
+#[Layout('components.layouts.app')]
+class Register extends Component
+{
+    public string $name = '';
+
+    public string $username = '';
+
+    public string $password = '';
+
+    public string $password_confirmation = '';
+
+    public string $school_id = '';
+
+    public function register(): RedirectResponse
+    {
+        $this->validate([
+            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username',
+            'password' => 'required|string|min:8|confirmed',
+            'school_id' => 'required|exists:schools,id',
+        ]);
+
+        $user = User::create([
+            'name' => $this->name,
+            'username' => $this->username,
+            'password' => Hash::make($this->password),
+            'role' => 'student',
+            'school_id' => $this->school_id,
+        ]);
+
+        Auth::login($user);
+
+        return redirect()->intended(route('dashboard'));
+    }
+
+    public function render(): View
+    {
+        return view('livewire.register', [
+            'schools' => School::whereDoesntHave('users', function ($query) {
+                $query->where('role', 'admin');
+            })->orderBy('name')->get(),
+        ]);
+    }
+}

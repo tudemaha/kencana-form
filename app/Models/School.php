@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class School extends Model
 {
@@ -11,12 +12,14 @@ class School extends Model
 
     protected $guarded = [];
 
-    public function users()
+    /** @return HasMany<User, $this> */
+    public function users(): HasMany
     {
         return $this->hasMany(User::class);
     }
 
-    public function forms()
+    /** @return HasMany<Form, $this> */
+    public function forms(): HasMany
     {
         return $this->hasMany(Form::class);
     }
