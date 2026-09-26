@@ -44,7 +44,7 @@
                 </div>
 
                 <div class="pt-4 mt-8">
-                    <button type="submit" class="w-full inline-flex justify-center rounded-xl border border-transparent bg-primary py-3 px-8 text-sm font-bold text-secondary shadow-sm hover:bg-secondary hover:text-white focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 transition-colors cursor-pointer">
+                    <button type="submit" class="w-full inline-flex justify-center items-center rounded-xl bg-primary py-3.5 px-8 text-base font-bold text-white shadow-md hover:bg-primary/90 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
                         Sign in
                     </button>
                 </div>

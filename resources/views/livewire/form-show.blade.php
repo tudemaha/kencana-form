@@ -63,7 +63,7 @@
                 </div>
                 <h3 class="text-lg font-medium text-gray-900">Login Required</h3>
                 <p class="mt-2 text-sm text-gray-500">You must be logged in as a student to fill out this form.</p>
-                <button wire:click="redirectToLogin" type="button" class="mt-6 inline-flex items-center justify-center px-6 py-2.5 border border-transparent text-sm font-medium rounded-xl text-secondary bg-primary hover:bg-secondary hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary cursor-pointer">
+                <button wire:click="redirectToLogin" type="button" class="mt-6 inline-flex items-center justify-center py-3.5 px-8 text-base font-bold text-white shadow-md rounded-xl bg-primary hover:bg-primary/90 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary cursor-pointer">
                     Login Now
                 </button>
             </div>
@@ -119,7 +119,7 @@
                                     <div class="max-h-60 overflow-y-auto p-3 space-y-3">
                                         @foreach($available as $choice)
                                             <div class="flex items-center" x-show="search === '' || '{{ strtolower(addslashes($choice)) }}'.includes(search.toLowerCase())">
-                                                <input type="checkbox" wire:model="data.{{ $question->id }}" value="{{ $choice }}" id="q_{{ $question->id }}_{{ $loop->index }}" class="h-4 w-4 rounded border-gray-300 text-secondary focus:ring-secondary">
+                                                <input type="checkbox" wire:model="data.{{ $question->id }}" value="{{ $choice }}" id="q_{{ $question->id }}_{{ $loop->index }}" class="h-4 w-4 rounded border-gray-300 cursor-pointer text-primary focus:ring-primary">
                                                 <label for="q_{{ $question->id }}_{{ $loop->index }}" class="ml-3 block text-sm text-gray-700 cursor-pointer">
                                                     {{ $choice }}
                                                 </label>
@@ -135,7 +135,7 @@
                                 <div class="space-y-3 mt-3">
                                     @foreach($question->choices ?? [] as $choice)
                                         <div class="flex items-center">
-                                            <input type="radio" wire:model="data.{{ $question->id }}" value="{{ $choice }}" id="q_{{ $question->id }}_{{ $loop->index }}" class="h-4 w-4 border-gray-300 text-secondary focus:ring-secondary">
+                                            <input type="radio" wire:model="data.{{ $question->id }}" value="{{ $choice }}" id="q_{{ $question->id }}_{{ $loop->index }}" class="h-4 w-4 border-gray-300 cursor-pointer text-primary focus:ring-primary">
                                             <label for="q_{{ $question->id }}_{{ $loop->index }}" class="ml-3 block text-sm text-gray-700 cursor-pointer">
                                                 {{ $choice }}
                                             </label>
@@ -147,7 +147,7 @@
                                 <div class="space-y-3 mt-3">
                                     @foreach($question->choices ?? [] as $choice)
                                         <div class="flex items-center">
-                                            <input type="checkbox" wire:model="data.{{ $question->id }}" value="{{ $choice }}" id="q_{{ $question->id }}_{{ $loop->index }}" class="h-4 w-4 rounded border-gray-300 text-secondary focus:ring-secondary">
+                                            <input type="checkbox" wire:model="data.{{ $question->id }}" value="{{ $choice }}" id="q_{{ $question->id }}_{{ $loop->index }}" class="h-4 w-4 rounded border-gray-300 cursor-pointer text-primary focus:ring-primary">
                                             <label for="q_{{ $question->id }}_{{ $loop->index }}" class="ml-3 block text-sm text-gray-700 cursor-pointer">
                                                 {{ $choice }}
                                             </label>
@@ -164,7 +164,7 @@
                 </div>
 
                 <div class="pt-8 mt-8 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <button type="submit" class="w-full sm:w-auto inline-flex justify-center rounded-xl border border-transparent bg-primary py-3 px-8 text-sm font-bold text-secondary shadow-sm hover:bg-secondary hover:text-white focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 transition-colors cursor-pointer">
+                    <button type="submit" class="w-full sm:w-auto inline-flex justify-center items-center rounded-xl bg-primary py-3.5 px-8 text-base font-bold text-white shadow-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all cursor-pointer">
                         {{ $submissionId ? 'Update Form' : 'Submit Form' }}
                     </button>
                     <span class="text-xs text-gray-400 font-medium">
