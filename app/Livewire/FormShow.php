@@ -39,6 +39,7 @@ class FormShow extends Component
         if (Auth::check()) {
             if (Auth::user()->role !== 'admin' && Auth::user()->school_id !== $this->formRecord->school_id) {
                 $this->isForbidden = true;
+
                 return;
             }
 

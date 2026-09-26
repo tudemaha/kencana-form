@@ -25,12 +25,12 @@ class UsersTable
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('created_at')
-                    ->label("Date Created")
+                    ->label('Date Created')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->label("Last Update")
+                    ->label('Last Update')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

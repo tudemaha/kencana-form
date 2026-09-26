@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class Form extends Model
@@ -27,17 +29,17 @@ class Form extends Model
         ];
     }
 
-    public function school()
+    public function school(): BelongsTo
     {
         return $this->belongsTo(School::class);
     }
 
-    public function questions()
+    public function questions(): HasMany
     {
         return $this->hasMany(FormQuestion::class);
     }
 
-    public function submissions()
+    public function submissions(): HasMany
     {
         return $this->hasMany(FormSubmission::class);
     }

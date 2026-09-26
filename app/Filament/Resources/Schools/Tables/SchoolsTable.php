@@ -20,7 +20,7 @@ class SchoolsTable
                     ->label('Email address')
                     ->searchable(),
                 TextColumn::make('phone')
-                    ->searchable()
+                    ->searchable(),
             ])
             ->filters([
                 //

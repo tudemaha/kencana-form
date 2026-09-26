@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\School;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,12 +16,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $school = \App\Models\School::create([
+        $school = School::create([
             'name' => 'Admin Test School',
             'address' => '123 Admin St',
         ]);
 
-        \App\Models\User::create([
+        User::create([
             'name' => 'Super Admin',
             'username' => 'admin',
             'password' => bcrypt('password'),

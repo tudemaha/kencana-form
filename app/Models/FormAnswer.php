@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class FormAnswer extends Model
 {
@@ -18,12 +19,12 @@ class FormAnswer extends Model
         ];
     }
 
-    public function submission()
+    public function submission(): BelongsTo
     {
         return $this->belongsTo(FormSubmission::class, 'submission_id');
     }
 
-    public function question()
+    public function question(): BelongsTo
     {
         return $this->belongsTo(FormQuestion::class, 'question_id');
     }
