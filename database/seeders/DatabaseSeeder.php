@@ -23,8 +23,8 @@ class DatabaseSeeder extends Seeder
 
         User::create([
             'name' => 'Super Admin',
-            'username' => env('ADMIN_USERNAME', 'adminkencana'),
-            'password' => bcrypt(env('ADMIN_PASSWORD', 'password')),
+            'username' => config('app.admin.username'),
+            'password' => bcrypt((string) config('app.admin.password')),
             'role' => 'admin',
             'school_id' => $school->id,
         ]);

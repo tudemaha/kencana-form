@@ -123,4 +123,18 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Credentials
+    |--------------------------------------------------------------------------
+    |
+    | Initial credentials used by the seeder to create the primary admin user.
+    |
+    */
+
+    'admin' => [
+        'username' => env('ADMIN_USERNAME', 'adminkencana'),
+        'password' => env('ADMIN_PASSWORD', 'password'),
+    ],
+
 ];
