@@ -95,3 +95,57 @@ php artisan event:cache
 # Optimize Filament components
 php artisan filament:optimize
 ```
+
+## Shared Hosting / cPanel Deployment (Split Directory Method)
+
+When deploying to a shared hosting environment like cPanel, it is highly recommended to use the **Split Directory Method** to keep your application code secure outside the public web root while placing public assets where cPanel expects them (`public_html`).
+
+### 1. Structure Your Directories
+- Upload all your Laravel project files (except the `public/` folder) to a folder outside of your web root (e.g., `/home/yourusername/kencana-form`).
+- Move the **contents** of your Laravel `public/` folder into cPanel's `/home/yourusername/public_html/` directory.
+
+### 2. Update `index.php`
+In your `public_html/index.php` file, update the paths so they point to your Laravel app directory:
+```php
+// Find these lines and update the paths:
+require __DIR__.'/../kencana-form/vendor/autoload.php';
+$app = require_once __DIR__.'/../kencana-form/bootstrap/app.php';
+```
+
+### 3. Change Public Path (`AppServiceProvider`)
+Since cPanel uses `public_html` instead of `public`, you need to tell Laravel where your public directory is so that functions like `public_path()` and asset generation work correctly.
+   
+Open `app/Providers/AppServiceProvider.php` (in your main app directory) and add this to the `register()` method:
+```php
+public function register(): void
+{
+    $this->app->usePublicPath(base_path('../public_html'));
+}
+```
+
+### 4. Create the Storage Symlink (via SSH)
+If you've deployed your application outside the `public_html` directory, `php artisan storage:link` won't map correctly to `public_html`. Manually create the symbolic link via your cPanel SSH Terminal:
+
+```bash
+# Remove any broken/existing link or folder first
+rm -rf ~/public_html/storage
+
+# Create the new symbolic link (adjust 'kencana-form' if you named it differently)
+ln -s ~/kencana-form/storage/app/public ~/public_html/storage
+```
+
+### 5. Frontend & Filament Assets
+If your cPanel does not support running `npm install`, `npm run build`, or Artisan commands, you must upload compiled assets manually:
+- **NPM Assets:** Run `npm run build` on your local computer, then upload the generated `public/build/` directory to `public_html/build/`.
+- **Filament Assets:** Filament's internal assets are ignored by Git. If you have SSH access, run `php artisan filament:upgrade`. If you do not have SSH access, temporarily remove `/public/css/filament`, `/public/js/filament`, and `/public/fonts/filament` from your local `.gitignore`, run the upgrade command locally, and manually upload those folders to `public_html/`.
+
+### 6. File Permissions (chmod)
+Laravel requires specific directories to be writable by the web server, and standard directories should have correct baseline permissions. Update the permissions via your cPanel File Manager or SSH Terminal:
+
+```bash
+# Set baseline permissions for the entire application folder
+chmod -R 755 ~/kencana-form
+
+# Make sure the storage and bootstrap/cache directories are writable
+chmod -R 775 ~/kencana-form/storage ~/kencana-form/bootstrap/cache
+```
