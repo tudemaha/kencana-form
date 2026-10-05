@@ -27,7 +27,37 @@ class Register extends Component
     public function register(): RedirectResponse
     {
         $this->validate([
-            'name' => 'required|string|max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    $form = \App\Models\Form::where('school_id', $this->school_id)
+                        ->where('is_active', true)
+                        ->latest()
+                        ->first();
+
+                    if ($form) {
+                        $partnerQuestion = $form->questions()->where('type', 'room_partner')->first();
+                        
+                        if ($partnerQuestion) {
+                            $choices = (array) $partnerQuestion->choices;
+                            
+                            $isValidName = collect($choices)->contains(function ($choice) use ($value) {
+                                // Expected format: <class> | <full name> | <L/P>
+                                $parts = explode('|', $choice);
+                                $nameInList = isset($parts[1]) ? trim($parts[1]) : trim($choice);
+                                
+                                return strtolower($nameInList) === strtolower(trim($value));
+                            });
+
+                            if (! $isValidName) {
+                                $fail('Your name is not registered to the system. Ensure you use the full name registered with the school.');
+                            }
+                        }
+                    }
+                },
+            ],
             'username' => 'required|string|max:255|unique:users,username',
             'password' => 'required|string|min:8|confirmed',
             'school_id' => 'required|exists:schools,id',
