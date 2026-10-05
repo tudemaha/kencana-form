@@ -3,7 +3,6 @@
 use App\Livewire\FormShow;
 use App\Livewire\Login;
 use App\Livewire\Register;
-use App\Models\Form;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -18,17 +17,9 @@ Route::get('/dashboard', function () {
         return redirect('/admin');
     }
 
-    $form = Form::where('school_id', $user->school_id)
-        ->where('is_active', true)
-        ->latest()
-        ->first();
-
-    if ($form) {
-        return redirect()->route('forms.show', $form->nanoid);
-    }
-
-    return abort(404, 'No active forms available for your school.');
+    return redirect('/');
 })->middleware('auth')->name('dashboard');
 Route::get('/login', Login::class)->name('login')->middleware('guest');
 Route::get('/register', Register::class)->name('register')->middleware('guest');
 Route::get('/forms/{nanoid}', FormShow::class)->name('forms.show');
+Route::post('/logout', function () { Auth::logout(); return redirect('/'); })->name('logout');

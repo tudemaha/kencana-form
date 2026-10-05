@@ -8,7 +8,17 @@
                     <span class="font-bold text-xl text-primary">Kencana Wisata</span>
                 </a>
                 <div class="flex items-center gap-4">
-                    <a href="{{ route('login') }}" class="text-sm font-bold text-gray-600 hover:text-primary transition-colors">Masuk</a>
+                    @auth
+                        <span class="text-sm font-medium text-gray-600">Halo, {{ auth()->user()->name }}</span>
+                        <form method="POST" action="{{ route('logout') }}" class="inline">
+                            @csrf
+                            <button type="submit" class="text-sm font-bold text-tertiary cursor-pointer hover:text-red-700 transition-colors">
+                                Logout
+                            </button>
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}" class="text-sm font-bold text-gray-600 hover:text-primary transition-colors">Masuk</a>
+                    @endauth
                 </div>
             </div>
         </div>
@@ -19,6 +29,11 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <div class="lg:grid lg:grid-cols-12 lg:gap-16 items-center">
                 <div class="lg:col-span-6 text-center lg:text-left">
+                    @if (session('success'))
+                        <div class="mb-8 p-4 text-sm text-green-800 rounded-lg bg-green-50 border border-green-200" role="alert">
+                            {{ session('success') }}
+                        </div>
+                    @endif
                     <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 mb-6 leading-tight">
                         Mitra Perjalanan <span class="text-primary">Anda</span> yang Terpercaya
                     </h1>

@@ -43,6 +43,8 @@ class Register extends Component
 
         Auth::login($user);
 
+        session()->flash('success', 'Registration successful! Please ask your school admin for your specific form link.');
+
         return redirect()->intended(route('dashboard'));
     }
 
