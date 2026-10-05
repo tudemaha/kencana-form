@@ -58,6 +58,7 @@
                 @foreach($questions as $q)
                     <th>{{ $q->question }}</th>
                 @endforeach
+                <th>Room Number</th>
             </tr>
         </thead>
         <tbody>
@@ -78,10 +79,49 @@
                         @endphp
                         <td>{{ $display }}</td>
                     @endforeach
+                    <td></td>
                 </tr>
             @endforeach
         </tbody>
     </table>
+
+    @php
+        $roomPartnerQuestions = $questions->where('type', 'room_partner');
+    @endphp
+
+    @if($roomPartnerQuestions->count() > 0)
+        @foreach($roomPartnerQuestions as $rpq)
+            @php
+                $choices = is_array($rpq->choices) ? $rpq->choices : [];
+                $pickedNames = [];
+                foreach($submissions as $sub) {
+                    $ans = $sub->answers->firstWhere('question_id', $rpq->id);
+                    if ($ans && $ans->answer) {
+                        $ansArray = is_array($ans->answer) ? $ans->answer : [$ans->answer];
+                        foreach($ansArray as $a) {
+                            $pickedNames[] = is_array($a) ? ($a['name'] ?? json_encode($a)) : $a;
+                        }
+                    }
+                }
+                $unpicked = array_diff($choices, $pickedNames);
+            @endphp
+            
+            <div style="margin-top: 24px;">
+                <div class="section-title">Leftover Students ({{ $rpq->question }})</div>
+                <div style="font-size: 10px; color: #555; background: #f8f8f8; padding: 10px; border: 1px solid #e5e7eb; border-radius: 4px; line-height: 1.5;">
+                    @if(count($unpicked) > 0)
+                        <ul>
+                            @foreach ($unpicked as $u)
+                                <div>{{ $u }}</div>
+                            @endforeach
+                        </ul>
+                    @else
+                        All students in the list have been selected.
+                    @endif
+                </div>
+            </div>
+        @endforeach
+    @endif
 
     <div class="footer">
         {{ $form->title }} &bull; {{ $form->school->name }} &bull; Form ID: {{ $form->nanoid }}
