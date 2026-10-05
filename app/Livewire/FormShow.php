@@ -88,15 +88,19 @@ class FormShow extends Component
         // Validation
         $rules = [];
         foreach ($this->formRecord->questions as $question) {
-            $rules['data.'.$question->id] = 'required';
-            if (in_array($question->type, ['checkbox', 'room_partner'])) {
+            if ($question->type === 'room_partner') {
+                $rules['data.'.$question->id] = 'required|array|min:1|max:4';
+            } elseif ($question->type === 'checkbox') {
                 $rules['data.'.$question->id] = 'required|array|min:1';
+            } else {
+                $rules['data.'.$question->id] = 'required';
             }
         }
 
         $messages = [
             'required' => 'This field is required.',
             'min' => 'You must select at least one option.',
+            'max' => 'You can only select up to :max partners.',
         ];
 
         $this->validate($rules, $messages);

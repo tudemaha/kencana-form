@@ -112,15 +112,15 @@
                                 @php
                                     $available = $this->getAvailablePartners($question);
                                 @endphp
-                                <div x-data="{ search: '' }" class="mt-3 border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm">
+                                <div x-data="{ search: '', selected: $wire.entangle('data.{{ $question->id }}') }" class="mt-3 border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm">
                                     <div class="p-2 border-b border-gray-100 bg-gray-50">
                                         <input x-model="search" type="text" placeholder="Search partners..." class="w-full text-sm border-gray-300 rounded-lg focus:ring-primary focus:border-primary px-3 py-2 bg-white">
                                     </div>
                                     <div class="max-h-60 overflow-y-auto p-3 space-y-3">
                                         @foreach($available as $choice)
                                             <div class="flex items-center" x-show="search === '' || '{{ strtolower(addslashes($choice)) }}'.includes(search.toLowerCase())">
-                                                <input type="checkbox" wire:model="data.{{ $question->id }}" value="{{ $choice }}" id="q_{{ $question->id }}_{{ $loop->index }}" class="h-4 w-4 rounded border-gray-300 cursor-pointer text-primary focus:ring-primary">
-                                                <label for="q_{{ $question->id }}_{{ $loop->index }}" class="ml-3 block text-sm text-gray-700 cursor-pointer">
+                                                <input type="checkbox" x-model="selected" value="{{ $choice }}" id="q_{{ $question->id }}_{{ $loop->index }}" class="h-4 w-4 rounded border-gray-300 cursor-pointer text-primary focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed" :disabled="selected.length >= 4 && !selected.includes('{{ addslashes($choice) }}')">
+                                                <label for="q_{{ $question->id }}_{{ $loop->index }}" class="ml-3 block text-sm text-gray-700 cursor-pointer" :class="{'opacity-50 cursor-not-allowed': selected.length >= 4 && !selected.includes('{{ addslashes($choice) }}')}">
                                                     {{ $choice }}
                                                 </label>
                                             </div>
