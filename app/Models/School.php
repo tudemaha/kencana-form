@@ -12,6 +12,13 @@ class School extends Model
 
     protected $guarded = [];
 
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+        ];
+    }
+
     /** @return HasMany<User, $this> */
     public function users(): HasMany
     {
