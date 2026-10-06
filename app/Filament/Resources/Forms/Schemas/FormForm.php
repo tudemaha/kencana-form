@@ -59,8 +59,9 @@ class FormForm
                             ->live(),
                         Textarea::make('choices')
                             ->label('Choices (one per line)')
-                            ->helperText(
-                                'For dropdown/room partner: each line is an option. '
+                            ->helperText(fn ($get) => $get('type') === 'room_partner'
+                                ? 'Strict format required: Class | Full Name | Gender (L/P). Example: X IPA 1 | Budi Santoso | L'
+                                : 'Enter each option on a new line.'
                             )
                             ->visible(fn ($get) => in_array($get('type'), ['radio', 'checkbox', 'dropdown', 'room_partner']))
                             ->afterStateHydrated(function ($component, $state) {
