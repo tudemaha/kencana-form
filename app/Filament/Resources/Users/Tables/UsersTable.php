@@ -18,6 +18,9 @@ class UsersTable
                     ->searchable(),
                 TextColumn::make('username')
                     ->searchable(),
+                TextColumn::make('gender')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('role')
                     ->searchable(),
                 TextColumn::make('school.name')

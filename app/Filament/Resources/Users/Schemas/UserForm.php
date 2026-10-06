@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use App\Enums\Gender;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -16,6 +17,9 @@ class UserForm
                     ->required(),
                 TextInput::make('username')
                     ->required(),
+                Select::make('gender')
+                    ->options(Gender::class)
+                    ->nullable(),
                 TextInput::make('password')
                     ->password()
                     ->required(),

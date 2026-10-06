@@ -2,11 +2,14 @@
 
 namespace App\Livewire;
 
+use App\Enums\Gender;
+use App\Models\Form;
 use App\Models\School;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -15,6 +18,8 @@ use Livewire\Component;
 class Register extends Component
 {
     public string $name = '';
+
+    public ?Gender $gender = null;
 
     public string $username = '';
 
@@ -32,32 +37,40 @@ class Register extends Component
                 'string',
                 'max:255',
                 function ($attribute, $value, $fail) {
-                    $form = \App\Models\Form::where('school_id', $this->school_id)
+                    $form = Form::where('school_id', $this->school_id)
                         ->where('is_active', true)
                         ->latest()
                         ->first();
 
                     if ($form) {
                         $partnerQuestion = $form->questions()->where('type', 'room_partner')->first();
-                        
+
                         if ($partnerQuestion) {
                             $choices = (array) $partnerQuestion->choices;
-                            
-                            $isValidName = collect($choices)->contains(function ($choice) use ($value) {
+
+                            $matchedChoice = collect($choices)->first(function ($choice) use ($value) {
                                 // Expected format: <class> | <full name> | <L/P>
                                 $parts = explode('|', $choice);
                                 $nameInList = isset($parts[1]) ? trim($parts[1]) : trim($choice);
-                                
+
                                 return strtolower($nameInList) === strtolower(trim($value));
                             });
 
-                            if (! $isValidName) {
+                            if (! $matchedChoice) {
                                 $fail('Your name is not registered to the system. Ensure you use the full name registered with the school.');
+                            } else {
+                                $parts = explode('|', $matchedChoice);
+                                $genderInList = isset($parts[2]) ? trim($parts[2]) : null;
+
+                                if ($genderInList && strtoupper($genderInList) !== $this->gender?->value) {
+                                    $fail('The selected gender does not match the school\'s passenger list data.');
+                                }
                             }
                         }
                     }
                 },
             ],
+            'gender' => ['required', Rule::enum(Gender::class)],
             'username' => 'required|string|max:255|unique:users,username',
             'password' => 'required|string|min:8|confirmed',
             'school_id' => 'required|exists:schools,id',
@@ -65,6 +78,7 @@ class Register extends Component
 
         $user = User::create([
             'name' => $this->name,
+            'gender' => $this->gender,
             'username' => $this->username,
             'password' => Hash::make($this->password),
             'role' => 'student',

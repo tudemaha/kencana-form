@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Gender;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
@@ -19,6 +20,7 @@ use Illuminate\Support\Str;
 /**
  * @property string $id
  * @property string $name
+ * @property Gender|null $gender
  * @property string $username
  * @property string $password
  * @property string $role
@@ -26,7 +28,7 @@ use Illuminate\Support\Str;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'username', 'password', 'role', 'school_id'])]
+#[Fillable(['name', 'gender', 'username', 'password', 'role', 'school_id'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements FilamentUser
 {
@@ -47,6 +49,7 @@ class User extends Authenticatable implements FilamentUser
     {
         return [
             'password' => 'hashed',
+            'gender' => Gender::class,
         ];
     }
 

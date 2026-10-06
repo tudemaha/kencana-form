@@ -22,4 +22,8 @@ Route::get('/dashboard', function () {
 Route::get('/login', Login::class)->name('login')->middleware('guest');
 Route::get('/register', Register::class)->name('register')->middleware('guest');
 Route::get('/forms/{nanoid}', FormShow::class)->name('forms.show');
-Route::post('/logout', function () { Auth::logout(); return redirect('/'); })->name('logout');
+Route::post('/logout', function () {
+    Auth::logout();
+
+    return redirect('/');
+})->name('logout');

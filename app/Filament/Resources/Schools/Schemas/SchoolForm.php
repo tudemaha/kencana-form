@@ -14,7 +14,7 @@ class SchoolForm
         return $schema
             ->components([
                 Toggle::make('is_active')
-                    ->label("Active")
+                    ->label('Active')
                     ->columnSpanFull()
                     ->default(true),
                 TextInput::make('name')

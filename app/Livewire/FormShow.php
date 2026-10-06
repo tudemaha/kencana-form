@@ -159,9 +159,25 @@ class FormShow extends Component
             ->unique()
             ->toArray();
 
-        return array_filter($choices, function ($choice) use ($pickedNames) {
-            return ! in_array($choice, $pickedNames);
-        });
+        return array_values(array_filter($choices, function ($choice) use ($pickedNames) {
+            if (in_array($choice, $pickedNames)) {
+                return false;
+            }
+
+            $userGender = Auth::user()?->gender;
+
+            if ($userGender) {
+                $parts = explode('|', $choice);
+                if (isset($parts[2])) {
+                    $choiceGender = trim($parts[2]);
+                    if (strtoupper($choiceGender) !== strtoupper($userGender->value)) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }));
     }
 
     public function logout(): RedirectResponse

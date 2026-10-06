@@ -23,6 +23,25 @@
                 </div>
 
                 <div>
+                    <label class="block text-sm font-medium text-gray-900 mb-2">
+                        Gender <span class="text-red-500">*</span>
+                    </label>
+                    <div class="flex gap-4">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" wire:model="gender" value="L" class="text-primary focus:ring-primary border-gray-300 w-4 h-4 cursor-pointer">
+                            <span class="text-sm text-gray-700">Male</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" wire:model="gender" value="P" class="text-primary focus:ring-primary border-gray-300 w-4 h-4 cursor-pointer">
+                            <span class="text-sm text-gray-700">Female</span>
+                        </label>
+                    </div>
+                    @error('gender')
+                        <p class="mt-1.5 text-sm text-red-500 font-medium">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
                     <label for="school_id" class="block text-sm font-medium text-gray-900">
                         School <span class="text-red-500">*</span>
                     </label>
