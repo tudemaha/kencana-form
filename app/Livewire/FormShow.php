@@ -156,12 +156,15 @@ class FormShow extends Component
         $pickedNames = $query
             ->pluck('answer')
             ->flatten()
-            ->unique()
             ->toArray();
 
-        return array_values(array_filter($choices, function ($choice) use ($pickedNames) {
-            if (in_array($choice, $pickedNames)) {
-                return false;
+        $available = [];
+        foreach ($choices as $choice) {
+            $pickedIndex = array_search($choice, $pickedNames);
+            if ($pickedIndex !== false) {
+                unset($pickedNames[$pickedIndex]);
+
+                continue;
             }
 
             $userGender = Auth::user()?->gender;
@@ -171,13 +174,15 @@ class FormShow extends Component
                 if (isset($parts[2])) {
                     $choiceGender = trim($parts[2]);
                     if (strtoupper($choiceGender) !== strtoupper($userGender->value)) {
-                        return false;
+                        continue;
                     }
                 }
             }
 
-            return true;
-        }));
+            $available[] = $choice;
+        }
+
+        return $available;
     }
 
     public function logout(): RedirectResponse

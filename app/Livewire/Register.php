@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Enums\Gender;
 use App\Models\Form;
+use App\Models\FormAnswer;
 use App\Models\School;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -48,7 +49,7 @@ class Register extends Component
                         if ($partnerQuestion) {
                             $choices = (array) $partnerQuestion->choices;
 
-                            $matchedChoice = collect($choices)->first(function ($choice) use ($value) {
+                            $matchedChoices = collect($choices)->filter(function ($choice) use ($value) {
                                 // Expected format: <class> | <full name> | <L/P>
                                 $parts = explode('|', $choice);
                                 $nameInList = isset($parts[1]) ? trim($parts[1]) : trim($choice);
@@ -56,14 +57,66 @@ class Register extends Component
                                 return strtolower($nameInList) === strtolower(trim($value));
                             });
 
-                            if (! $matchedChoice) {
+                            if ($matchedChoices->isEmpty()) {
                                 $fail('Your name is not registered to the system. Ensure you use the full name registered with the school.');
                             } else {
-                                $parts = explode('|', $matchedChoice);
-                                $genderInList = isset($parts[2]) ? trim($parts[2]) : null;
+                                $validAndAvailable = $matchedChoices->first(function ($choice) use ($partnerQuestion, $choices) {
+                                    $parts = explode('|', $choice);
+                                    $genderInList = isset($parts[2]) ? trim($parts[2]) : null;
 
-                                if ($genderInList && strtoupper($genderInList) !== $this->gender?->value) {
-                                    $fail('The selected gender does not match the school\'s passenger list data.');
+                                    if ($genderInList && strtoupper($genderInList) !== $this->gender?->value) {
+                                        return false;
+                                    }
+
+                                    $pickedCount = FormAnswer::where('question_id', $partnerQuestion->id)
+                                        ->pluck('answer')
+                                        ->flatten()
+                                        ->filter(fn ($ans) => $ans === $choice)
+                                        ->count();
+
+                                    $totalInChoices = collect($choices)
+                                        ->filter(fn ($c) => $c === $choice)
+                                        ->count();
+
+                                    return $pickedCount < $totalInChoices;
+                                });
+
+                                if (! $validAndAvailable) {
+                                    $hasRightGender = $matchedChoices->contains(function ($choice) {
+                                        $parts = explode('|', $choice);
+                                        $genderInList = isset($parts[2]) ? trim($parts[2]) : null;
+
+                                        return ! $genderInList || strtoupper($genderInList) === $this->gender?->value;
+                                    });
+
+                                    if (! $hasRightGender) {
+                                        $fail('The selected gender does not match the school\'s passenger list data.');
+                                    } else {
+                                        $roommates = [];
+
+                                        $answers = FormAnswer::where('question_id', $partnerQuestion->id)->get();
+
+                                        foreach ($matchedChoices as $matchedChoice) {
+                                            $matchingAnswers = $answers->filter(function ($ans) use ($matchedChoice) {
+                                                return in_array($matchedChoice, (array) $ans->answer);
+                                            });
+
+                                            foreach ($matchingAnswers as $ans) {
+                                                $others = array_diff((array) $ans->answer, [$matchedChoice]);
+                                                foreach ($others as $other) {
+                                                    $parts = explode('|', $other);
+                                                    $roommates[] = isset($parts[1]) ? trim($parts[1]) : trim($other);
+                                                }
+                                            }
+                                        }
+
+                                        if (! empty($roommates)) {
+                                            $namesStr = implode(', ', array_unique($roommates));
+                                            $fail("Your name has already been selected. You are grouped with: {$namesStr}. You do not need to register.");
+                                        } else {
+                                            $fail('Your name has already been selected. You do not need to register.');
+                                        }
+                                    }
                                 }
                             }
                         }
