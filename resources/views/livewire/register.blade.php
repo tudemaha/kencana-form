@@ -46,12 +46,8 @@
                         School <span class="text-red-500">*</span>
                     </label>
                     <div class="mt-2">
-                        <select id="school_id" wire:model="school_id" required class="block w-full rounded-xl border border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm px-4 py-2.5 transition-colors bg-white">
-                            <option value="">Select your school</option>
-                            @foreach($schools as $school)
-                                <option value="{{ $school->id }}">{{ $school->name }}</option>
-                            @endforeach
-                        </select>
+                        <input type="text" disabled value="{{ $lockedSchool?->name }}" class="block w-full rounded-xl border border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm px-4 py-2.5 transition-colors bg-gray-50 opacity-70 cursor-not-allowed">
+                        <input type="hidden" wire:model="school_id">
                     </div>
                     @error('school_id')
                         <p class="mt-1.5 text-sm text-red-500 font-medium">{{ $message }}</p>

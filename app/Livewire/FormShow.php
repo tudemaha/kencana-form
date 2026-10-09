@@ -198,7 +198,7 @@ class FormShow extends Component
     {
         session()->put('url.intended', route('forms.show', $this->formRecord->nanoid));
 
-        return redirect()->route('login');
+        return redirect()->route('login', ['f' => $this->formRecord->nanoid]);
     }
 
     public function render(): View

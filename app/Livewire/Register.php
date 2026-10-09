@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 
 #[Layout('components.layouts.app')]
@@ -30,6 +31,24 @@ class Register extends Component
 
     public string $school_id = '';
 
+    #[Url(as: 'f')]
+    public ?string $form_nanoid = null;
+
+    public function mount(): void
+    {
+        if (! $this->form_nanoid) {
+            abort(403, 'A valid registration link is required.');
+        }
+
+        $form = Form::where('nanoid', $this->form_nanoid)->where('is_active', true)->first();
+
+        if (! $form) {
+            abort(404, 'Registration form not found or is no longer active.');
+        }
+
+        $this->school_id = $form->school_id;
+    }
+
     public function register(): RedirectResponse
     {
         $this->validate([
@@ -38,9 +57,9 @@ class Register extends Component
                 'string',
                 'max:255',
                 function ($attribute, $value, $fail) {
-                    $form = Form::where('school_id', $this->school_id)
+                    $form = Form::where('nanoid', $this->form_nanoid)
+                        ->where('school_id', $this->school_id)
                         ->where('is_active', true)
-                        ->latest()
                         ->first();
 
                     if ($form) {
@@ -140,18 +159,15 @@ class Register extends Component
 
         Auth::login($user);
 
-        session()->flash('success', 'Registration successful! Please ask your school admin for your specific form link.');
+        session()->flash('success', 'Registration successful! You can now fill out the form.');
 
-        return redirect()->intended(route('dashboard'));
+        return redirect()->route('forms.show', $this->form_nanoid);
     }
 
     public function render(): View
     {
         return view('livewire.register', [
-            'schools' => School::where('is_active', true)
-                ->whereDoesntHave('users', function ($query) {
-                    $query->where('role', 'admin');
-                })->orderBy('name')->get(),
+            'lockedSchool' => School::find($this->school_id),
         ]);
     }
 }

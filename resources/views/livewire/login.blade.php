@@ -52,7 +52,7 @@
                 <div class="mt-4 text-center">
                     <p class="text-sm text-gray-600">
                         Don't have an account? 
-                        <a href="{{ route('register') }}" class="font-medium text-primary hover:text-secondary transition-colors">Sign up</a>
+                        <a href="{{ route('register', $formNanoid ? ['f' => $formNanoid] : []) }}" class="font-medium text-primary hover:text-secondary transition-colors">Sign up</a>
                     </p>
                 </div>
             </form>

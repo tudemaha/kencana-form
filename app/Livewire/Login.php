@@ -6,6 +6,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 
 #[Layout('components.layouts.app')]
@@ -33,8 +34,13 @@ class Login extends Component
         return null;
     }
 
+    #[Url(as: 'f')]
+    public ?string $formNanoid = null;
+
     public function render(): View
     {
-        return view('livewire.login');
+        return view('livewire.login', [
+            'formNanoid' => $this->formNanoid,
+        ]);
     }
 }
