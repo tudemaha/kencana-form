@@ -26,7 +26,11 @@ class Login extends Component
         if (Auth::attempt(['username' => $this->username, 'password' => $this->password])) {
             session()->regenerate();
 
-            return redirect()->intended(route('dashboard'));
+            if ($this->formNanoid) {
+                return redirect()->route('forms.show', $this->formNanoid);
+            }
+
+            return redirect()->route('dashboard');
         }
 
         $this->addError('auth', 'The provided credentials do not match our records.');

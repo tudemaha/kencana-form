@@ -196,8 +196,6 @@ class FormShow extends Component
 
     public function redirectToLogin(): RedirectResponse
     {
-        session()->put('url.intended', route('forms.show', $this->formRecord->nanoid));
-
         return redirect()->route('login', ['f' => $this->formRecord->nanoid]);
     }
 
